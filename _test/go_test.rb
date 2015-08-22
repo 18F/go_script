@@ -26,20 +26,40 @@ module GoScript
 
     def test_def_command
       result = nil
-      def_command :test_cmd, ModuleTest.command_group, 'Test command' do |args|
-        result = args.join ' '
+      def_command :test_cmd, ModuleTest.command_group, 'Test command' do
+        result = 'success'
       end
-      test_cmd %w(test cmd args)
-      assert_equal 'test cmd args', result
+      test_cmd
+      assert_equal 'success', result
+    end
+
+    def test_invoke_command_with_optional_argument
+      result = nil
+      def_command(:test_cmd2, ModuleTest.command_group,
+        'Second test command') do |optional_argv = []|
+        result = 'success ' + optional_argv.join(' ')
+      end
+      test_cmd2 %w(foo bar)
+      assert_equal 'success foo bar', result
+    end
+
+    def test_invoke_command_without_optional_argument
+      result = nil
+      def_command(:test_cmd3, ModuleTest.command_group,
+        'Third test command') do |optional_argv = []|
+        result = 'success ' + optional_argv.join(' ')
+      end
+      test_cmd3
+      assert_equal 'success ', result
     end
 
     def test_execute_command
       result = nil
-      def_command(:test_cmd2, ModuleTest.command_group,
-        'Second test command') do |moar, args|
+      def_command(:test_cmd4, ModuleTest.command_group,
+        'Fourth test command') do |moar, args|
         result = [moar, args]
       end
-      execute_command %w(test_cmd2 moar args)
+      execute_command %w(test_cmd4 moar args)
       assert_equal %w(moar args), result
     end
 
