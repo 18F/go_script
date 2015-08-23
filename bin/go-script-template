@@ -35,7 +35,6 @@ check_ruby_version '#{RUBY_VERSION}'
 dev_commands = GoScript::CommandGroup.add_group 'Development commands'
 
 def_command :init, dev_commands, 'Set up the development environment' do
-  install_bundle
 end
 
 def_command :update_gems, dev_commands, 'Update Ruby gems' do |gems|
