@@ -117,18 +117,18 @@ Commands may take command-line arguments, which are passed in as block
 variables. In the following example, the `./go init` command takes no
 arguments, and the `./go test` command takes an argument list that is appended
 as additional command line arguments to `rake test`. For example, `./go test`
-runs `bundle exec rate test` without any further arguments, while running
+runs `bundle exec rake test` without any further arguments, while running
 `./go test TEST=_test/go_test.rb` ultimately runs `bundle exec rake test
 TEST=_test/go_test.rb`.
 
 ```ruby
-dev_commands = GoScript::CommandGroup.add_group 'Development commands'
+command_group :dev, 'Development commands'
 
-def_command :init, dev_commands, 'Set up the development environment' do
+def_command :init, 'Set up the development environment' do
   install_bundle
 end
 
-def_command :test, dev_commands, 'Execute automated tests' do |args|
+def_command :test, 'Execute automated tests' do |args|
   exec_cmd "bundle exec rake test #{args.join ' '}"
 end
 ```
