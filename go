@@ -2,12 +2,9 @@
 
 require 'English'
 
-begin
-  require_relative 'lib/go_script'
-rescue LoadError
-  puts 'Installing go_script gem...'
-  exit $CHILD_STATUS.exitstatus unless system 'gem install go_script'
-end
+Dir.chdir File.dirname(__FILE__)
+
+require_relative 'lib/go_script'
 
 GoScript::Version.check_ruby_version '2.2.3'
 
