@@ -6,9 +6,8 @@ Dir.chdir File.dirname(__FILE__)
 
 require_relative 'lib/go_script'
 
-GoScript::Version.check_ruby_version '2.2.3'
-
 extend GoScript
+check_ruby_version '2.2.3'
 
 BASEDIR = File.dirname(__FILE__)
 dev_commands = GoScript::CommandGroup.add_group 'Development commands'

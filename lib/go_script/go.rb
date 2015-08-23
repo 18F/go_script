@@ -5,6 +5,10 @@ require_relative './version'
 require 'English'
 
 module GoScript
+  def check_ruby_version(min_version)
+    Version.check_ruby_version min_version
+  end
+
   def def_command(id, command_group, description, &command_block)
     abort "Command ID must be a symbol: #{id}" unless id.instance_of? Symbol
     self.class.send :define_method, id, ->(argv) { command_block.call argv }

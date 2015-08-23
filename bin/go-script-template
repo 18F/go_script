@@ -29,9 +29,8 @@ rescue LoadError
   try_command_and_restart 'gem install go_script'
 end
 
-GoScript::Version.check_ruby_version '#{RUBY_VERSION}'
-
 extend GoScript
+check_ruby_version '#{RUBY_VERSION}'
 
 dev_commands = GoScript::CommandGroup.add_group 'Development commands'
 
