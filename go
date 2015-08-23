@@ -13,16 +13,8 @@ extend GoScript
 BASEDIR = File.dirname(__FILE__)
 dev_commands = GoScript::CommandGroup.add_group 'Development commands'
 
-def_command :init, dev_commands, 'Set up the development environment' do
-  install_bundle
-end
-
 def_command :update_gems, dev_commands, 'Update Ruby gems' do |gems|
   update_gems gems
-end
-
-def_command :update_js, dev_commands, 'Update JavaScript components' do
-  update_node_modules
 end
 
 def_command :test, dev_commands, 'Execute automated tests' do |args|
