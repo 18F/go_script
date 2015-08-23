@@ -20,20 +20,20 @@ language](https://golang.org). This convention is completely unrelated,
 though it does bear a great deal of resemblance to the Go language's `go`
 command.
 
-### Installation
+### Everyone: install Ruby
 
 Install [the Ruby programming language](https://www.ruby-lang.org/) if it
 isn't already present on your system. We recommend using a Ruby version
 manager such as [rbenv](https://github.com/sstephenson/rbenv) or
 [rvm](https://rvm.io/) to do this.
 
-Install [Bundler](http://bundler.io/) via `gem install bundler`.
+### Project authors: creating a `./go` script
 
-Finally, install the `go_script` gem via `gem install go_script`. You may also
-wish to add it to the [`Gemfile`](http://bundler.io/gemfile.html) of your
-project to ensure version consistency.
+Install the `go_script` gem via `gem install go_script`.
 
-### Creating a `./go` script
+To ensure version consistency for all developers, install
+[Bundler](http://bundler.io/) via `gem install bundler` and add `gem
+'go_script'` to your project's [`Gemfile`](http://bundler.io/gemfile.html).
 
 To create a fresh new `./go` script for your project, run:
 
@@ -49,6 +49,17 @@ $ bundle exec go-script-template > ./go
 $ chmod 700 ./go
 ```
 
+As a bonus, if the project only needs to initialize itself by installing Ruby
+gems from a `Gemfile`, there is no need to define an `init` command. The
+`./go` script will automatically install Bundler and run `bundle install`.
+
+### Project contributors: bootstrapping
+
+If the project already has a `./go` script, you do not need to install
+anything first other than Ruby. Just run the `./go` script. It will
+automatically install the `go_script` gem, either via Bundler (if a `Gemfile`
+is present) or directly using `gem install`.
+
 ### Listing commands
 
 To see the list of available commands for a script: run `./go help` (or one of
@@ -63,9 +74,7 @@ options:
   -v,--version  Show the version of the go_script gem
 
 Development commands
-  init         Set up the development environment
   update_gems  Update Ruby gems
-  update_js    Update JavaScript components
   test         Execute automated tests
   lint         Run style-checking tools
   ci_build     Execute continuous integration build
