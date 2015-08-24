@@ -72,9 +72,11 @@ module GoScript
     exec_cmd "#{JEKYLL_BUILD_CMD} #{extra_args}"
   end
 
-  def git_sync_and_deploy(commands)
+  def git_sync_and_deploy(commands, branch: nil)
     exec_cmd 'git stash'
+    exec_cmd "git checkout -b #{branch}" unless branch.nil?
     exec_cmd 'git pull'
+    exec_cmd 'bundle install' if File.exist? 'Gemfile'
     commands.each { |command| exec_cmd command }
   end
 

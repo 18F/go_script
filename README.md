@@ -128,7 +128,7 @@ def_command :init, 'Set up the development environment' do
   install_bundle
 end
 
-def_command :test, 'Execute automated tests' do |args|
+def_command :test, 'Execute automated tests' do |args = []|
   exec_cmd "bundle exec rake test #{args.join ' '}"
 end
 ```
