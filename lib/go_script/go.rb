@@ -5,21 +5,32 @@ require_relative './version'
 require 'English'
 
 module GoScript
+  attr_reader :current_group
+
   def check_ruby_version(min_version)
     Version.check_ruby_version min_version
   end
 
-  def def_command(id, command_group, description, &command_block)
+  def command_group(group_symbol, description)
+    location = caller_locations(1, 1).first
+    CommandGroup.add_group(group_symbol, description,
+      location.path, location.lineno)
+    @current_group = group_symbol
+  end
+
+  def def_command(id, description, &command_block)
+    abort "#{$PROGRAM_NAME}: No command_groups defined" unless current_group
     abort "Command ID must be a symbol: #{id}" unless id.instance_of? Symbol
     self.class.send :define_method, id, ->(*argv) { command_block.call(*argv) }
-    command_group.commands[id] = description
+    path, lineno = command_block.source_location
+    CommandGroup.add_command id, @current_group, description, path, lineno
   end
 
   def execute_command(argv)
     command = argv.shift
     CommandGroup.usage exitstatus: 1 if command.nil?
     CommandGroup.usage if ['-h', '--help', '-help', 'help'].include? command
-    send version if ['-v', '--version', 'version'].include? command
+    send :version if ['-v', '--version', 'version'].include? command
     send CommandGroup.command(command.to_sym), argv
   end
 
@@ -36,9 +47,7 @@ module GoScript
     begin
       require 'bundler'
     rescue LoadError
-      puts 'Installing Bundler gem...'
       exec_cmd 'gem install bundler'
-      puts 'Bundler installed; installing gems'
     end
     exec_cmd 'bundle install'
   end

@@ -89,7 +89,6 @@ comprise the `./go` script interface. Its arguments are:
 - *id*: A [Ruby symbol](http://ruby-doc.org/core-2.2.3/Symbol.html)
   (basically, a string starting with `:` with no quotes around it) defining
   the name of the command.
-- *command_group*: A `CommandGroup` instance associated with the command.
 - *description*: A very brief description of the command that appears in the
   usage text.
 
@@ -99,13 +98,27 @@ directives from [`lib/go_script/go.rb`](lib/go_script/go.rb) that may be used
 to define commands, and commands may be built up from other commands defined
 in the `./go` script itself.
 
+**Note:** Command names must be unique. Defining a command with a name already
+used elsewhere will cause the `./go` script to exit with an error message.
+
 #### Command groups
 
-A `CommandGroup` instance clusters a set of commands together.
-`go-script-template` generates a default `CommandGroup` instance called
-`dev_commands`; you are free to edit this definition, or to add additional
-`CommandGroup` instances to organize your individual command definitions and
-affect how they are displayed in the help/usage message.
+Each `command_group` invocation marks the beginning of a set of related
+commands. These groupings organize how commands are displayed in the
+help/usage message.
+
+`go-script-template` generates a default `command_group` called `:dev`. You
+are free to edit this definition, or to add additional `command_group`
+definitions.
+
+**Note:** Command group names must be unique, and command groups cannot be
+re-opened after their initial definition. Defining a command group with a name
+already used elsewhere will cause the `./go` script to exit with an error
+message.
+
+Also, command names must be unique across all command groups. Defining a
+command with the same name as that in another command group will also cause
+the `./go` script to exit with an error message.
 
 #### Command arguments
 
@@ -113,17 +126,17 @@ Commands may take command-line arguments, which are passed in as block
 variables. In the following example, the `./go init` command takes no
 arguments, and the `./go test` command takes an argument list that is appended
 as additional command line arguments to `rake test`. For example, `./go test`
-runs `bundle exec rate test` without any further arguments, while running
+runs `bundle exec rake test` without any further arguments, while running
 `./go test TEST=_test/go_test.rb` ultimately runs `bundle exec rake test
 TEST=_test/go_test.rb`.
 
 ```ruby
-dev_commands = GoScript::CommandGroup.add_group 'Development commands'
+command_group :dev, 'Development commands'
 
-def_command :init, dev_commands, 'Set up the development environment' do
+def_command :init, 'Set up the development environment' do
 end
 
-def_command :test, dev_commands, 'Execute automated tests' do |args = []|
+def_command :test, 'Execute automated tests' do |args = []|
   exec_cmd "bundle exec rake test #{args.join ' '}"
 end
 ```
