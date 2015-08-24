@@ -8,10 +8,15 @@ require 'stringio'
 
 module GoScript
   class ModuleTest < ::Minitest::Test
-    include GoScript
+    attr_accessor :command_group
 
-    def self.command_group
-      @command_group ||= CommandGroup.add_group 'Test commands'
+    def setup
+      extend GoScript
+      @command_group = CommandGroup.add_group 'Test commands'
+    end
+
+    def teardown
+      CommandGroup.groups.pop
     end
 
     def test_exec_cmd
@@ -26,27 +31,44 @@ module GoScript
 
     def test_def_command
       result = nil
-      def_command :test_cmd, ModuleTest.command_group, 'Test command' do |args|
-        result = args.join ' '
+      def_command :test_cmd, command_group, 'Test command' do
+        result = 'success'
       end
-      test_cmd %w(test cmd args)
-      assert_equal 'test cmd args', result
+      test_cmd
+      assert_equal 'success', result
+    end
+
+    def test_invoke_command_with_optional_argument
+      result = nil
+      def_command(:test_cmd, command_group,
+        'Test command') do |optional_argv = []|
+        result = 'success ' + optional_argv.join(' ')
+      end
+      test_cmd %w(foo bar)
+      assert_equal 'success foo bar', result
+    end
+
+    def test_invoke_command_without_optional_argument
+      result = nil
+      def_command(:test_cmd, command_group,
+        'Test command') do |optional_argv = []|
+        result = 'success ' + optional_argv.join(' ')
+      end
+      test_cmd
+      assert_equal 'success ', result
     end
 
     def test_execute_command
       result = nil
-      def_command(:test_cmd2, ModuleTest.command_group,
-        'Second test command') do |moar, args|
+      def_command :test_cmd, command_group, 'Test command' do |moar, args|
         result = [moar, args]
       end
-      execute_command %w(test_cmd2 moar args)
+      execute_command %w(test_cmd moar args)
       assert_equal %w(moar args), result
     end
 
     def test_execute_command_fail_with_usage_message_if_command_is_nil
       orig_stderr, $stderr = $stderr, StringIO.new
-      # Ensure the 'Test commands' group exists
-      ModuleTest.command_group
       exception = assert_raises(SystemExit) { execute_command [] }
       assert_equal 1, exception.status
       assert $stderr.string.start_with? "Usage: #{$PROGRAM_NAME}"
@@ -57,8 +79,6 @@ module GoScript
 
     def test_execute_command_show_usage_message_when_help_option_specified
       orig_stdout, $stdout = $stdout, StringIO.new
-      # Ensure the 'Test commands' group exists
-      ModuleTest.command_group
       exception = assert_raises(SystemExit) { execute_command %w(-h) }
       assert_equal 0, exception.status
       assert $stdout.string.start_with? "Usage: #{$PROGRAM_NAME}"

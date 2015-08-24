@@ -21,7 +21,7 @@ module GoScript
     end
 
     class <<self
-      attr_reader :groups
+      attr_accessor :groups
       def add_group(description)
         (@groups ||= []).push(new(description)).last
       end
