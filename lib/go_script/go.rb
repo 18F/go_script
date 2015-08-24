@@ -7,6 +7,10 @@ require 'English'
 module GoScript
   attr_reader :current_group
 
+  def check_ruby_version(min_version)
+    Version.check_ruby_version min_version
+  end
+
   def command_group(group_symbol, description)
     location = caller_locations(1, 1).first
     CommandGroup.add_group(group_symbol, description,

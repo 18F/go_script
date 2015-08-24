@@ -8,22 +8,33 @@ puts <<END_OF_TEMPLATE
 
 require 'English'
 
+Dir.chdir File.dirname(__FILE__)
+
+def try_command_and_restart(command)
+  exit $CHILD_STATUS.exitstatus unless system command
+  exec $PROGRAM_NAME, *ARGV
+end
+
+begin
+  require 'bundler/setup' if File.exist? 'Gemfile'
+rescue LoadError
+  try_command_and_restart 'gem install bundler'
+rescue SystemExit
+  try_command_and_restart 'bundle install'
+end
+
 begin
   require 'go_script'
 rescue LoadError
-  puts 'Installing go_script gem...'
-  exit $CHILD_STATUS.exitstatus unless system 'gem install go_script'
+  try_command_and_restart 'gem install go_script'
 end
 
-GoScript::Version.check_ruby_version '#{RUBY_VERSION}'
-
 extend GoScript
+check_ruby_version '#{RUBY_VERSION}'
 
-BASEDIR = File.dirname(__FILE__)
 command_group :dev, 'Development commands'
 
 def_command :init, 'Set up the development environment' do
-  install_bundle
 end
 
 def_command :update_gems, 'Update Ruby gems' do |gems|
