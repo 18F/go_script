@@ -73,6 +73,15 @@ module GoScript
     (args.instance_of? Array) ? args.join(' ') : args
   end
 
+  def file_args_by_extension(file_args, extension)
+    if file_args.instance_of? Array
+      files_by_extension = file_args.group_by { |f| File.extname f }
+      args_to_string files_by_extension[extension]
+    else
+      args_to_string file_args
+    end
+  end
+
   def serve_jekyll(extra_args = '')
     exec "#{JEKYLL_SERVE_CMD} #{args_to_string extra_args}"
   end
@@ -90,13 +99,11 @@ module GoScript
   end
 
   def lint_ruby(files)
-    files = files.group_by { |f| File.extname f }
-    exec_cmd "bundle exec rubocop #{args_to_string files['.rb']}"
+    exec_cmd "bundle exec rubocop #{file_args_by_extension files, '.rb'}"
   end
 
   def lint_javascript(basedir, files)
-    files = files.group_by { |f| File.extname f }
-    files = args_to_string files['.js']
+    files = file_args_by_extension files, '.js'
     exec_cmd "#{basedir}/node_modules/jshint/bin/jshint #{files}"
   end
 end
