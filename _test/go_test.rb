@@ -107,5 +107,17 @@ module GoScript
     ensure
       $stdout = orig_stdout
     end
+
+    def test_args_to_string_from_nil
+      assert_equal '', args_to_string(nil)
+    end
+
+    def test_args_to_string_from_array
+      assert_equal 'foo bar baz', args_to_string(%w(foo bar baz))
+    end
+
+    def test_args_to_string_from_string
+      assert_equal 'foo bar baz', args_to_string('foo bar baz')
+    end
   end
 end

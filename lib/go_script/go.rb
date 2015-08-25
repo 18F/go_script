@@ -68,12 +68,17 @@ module GoScript
   JEKYLL_BUILD_CMD = 'bundle exec jekyll build --trace'
   JEKYLL_SERVE_CMD = 'bundle exec jekyll serve -w --trace'
 
-  def serve_jekyll(extra_args)
-    exec "#{JEKYLL_SERVE_CMD} #{extra_args}"
+  def args_to_string(args)
+    args ||= ''
+    (args.instance_of? Array) ? args.join(' ') : args
   end
 
-  def build_jekyll(extra_args)
-    exec_cmd "#{JEKYLL_BUILD_CMD} #{extra_args}"
+  def serve_jekyll(extra_args = '')
+    exec "#{JEKYLL_SERVE_CMD} #{args_to_string extra_args}"
+  end
+
+  def build_jekyll(extra_args = '')
+    exec_cmd "#{JEKYLL_BUILD_CMD} #{args_to_string extra_args}"
   end
 
   def git_sync_and_deploy(commands, branch: nil)
@@ -85,12 +90,13 @@ module GoScript
   end
 
   def lint_ruby(files)
-    files ||= []
-    exec_cmd "bundle exec rubocop #{files.join ' '}"
+    files = files.group_by { |f| File.extname f }
+    exec_cmd "bundle exec rubocop #{args_to_string files['.rb']}"
   end
 
   def lint_javascript(basedir, files)
-    files ||= []
-    exec_cmd "#{basedir}/node_modules/jshint/bin/jshint #{files.join ' '}"
+    files = files.group_by { |f| File.extname f }
+    files = args_to_string files['.js']
+    exec_cmd "#{basedir}/node_modules/jshint/bin/jshint #{files}"
   end
 end

@@ -21,17 +21,16 @@ def_command :test, 'Execute automated tests' do |args|
 end
 
 def_command :lint, 'Run style-checking tools' do |files|
-  files = files.group_by { |f| File.extname f }
-  lint_ruby files['.rb']
+  lint_ruby files
 end
 
 def_command :ci_build, 'Execute continuous integration build' do
-  test []
+  test
   exec_cmd 'bundle exec rake build'
 end
 
 def_command :release, 'Test, build, and release a new gem' do
-  test []
+  test
   exec_cmd 'bundle exec rake release'
 end
 
