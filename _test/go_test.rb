@@ -108,4 +108,43 @@ module GoScript
       $stdout = orig_stdout
     end
   end
+
+  class UtilityTest < ::Minitest::Test
+    def setup
+      extend GoScript
+    end
+
+    def test_args_to_string_from_nil
+      assert_equal '', args_to_string(nil)
+    end
+
+    def test_args_to_string_from_empty_array
+      assert_equal '', args_to_string([])
+    end
+
+    def test_args_to_string_from_array
+      assert_equal 'foo bar baz', args_to_string(%w(foo bar baz))
+    end
+
+    def test_args_to_string_from_string
+      assert_equal 'foo bar baz', args_to_string('foo bar baz')
+    end
+
+    def test_file_args_by_extension_from_nil
+      assert_equal '', file_args_by_extension(nil, nil)
+    end
+
+    def test_file_args_by_extension_from_string
+      assert_equal 'foo bar baz', file_args_by_extension('foo bar baz', nil)
+    end
+
+    def test_file_args_by_extension_from_empty_array
+      assert_equal '', file_args_by_extension([], nil)
+    end
+
+    def test_file_args_by_extension_from_array
+      files = %w(quux.js foo.rb xyzzy.py bar.rb plugh.go baz.rb)
+      assert_equal 'foo.rb bar.rb baz.rb', file_args_by_extension(files, '.rb')
+    end
+  end
 end
