@@ -52,8 +52,8 @@ module GoScript
     exec_cmd 'bundle install'
   end
 
-  def update_gems(gems)
-    exec_cmd "bundle update #{gems}"
+  def update_gems(gems = '')
+    exec_cmd "bundle update #{args_to_string gems}"
     exec_cmd 'git add Gemfile.lock'
   end
 
