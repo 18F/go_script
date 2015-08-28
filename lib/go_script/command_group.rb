@@ -65,7 +65,7 @@ module GoScript
       end
 
       def command_defined?(command)
-        groups.values.each { |g| return true if g.include_command? command }
+        groups.values.any? { |g| g.include_command? command }
       end
 
       def add_command(command, group_symbol, description, path, lineno)

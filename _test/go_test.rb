@@ -107,6 +107,17 @@ module GoScript
     ensure
       $stdout = orig_stdout
     end
+
+    def test_execute_command_show_unknown_command_message
+      orig_stderr, $stderr = $stderr, StringIO.new
+      exception = assert_raises(SystemExit) { execute_command %w(do_foo) }
+      assert_equal 1, exception.status
+      assert $stderr.string.start_with? 'Unknown option or command: do_foo'
+      assert_includes $stderr.string, "Usage: #{$PROGRAM_NAME}"
+      assert_includes $stderr.string, 'Test commands'
+    ensure
+      $stderr = orig_stderr
+    end
   end
 
   class UtilityTest < ::Minitest::Test
