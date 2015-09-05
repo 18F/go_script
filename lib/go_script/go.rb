@@ -40,16 +40,7 @@ module GoScript
   end
 
   def exec_cmd(cmd)
-    exit $CHILD_STATUS.exitstatus unless system cmd
-  end
-
-  def install_bundle
-    begin
-      require 'bundler'
-    rescue LoadError
-      exec_cmd 'gem install bundler'
-    end
-    exec_cmd 'bundle install'
+    exit $CHILD_STATUS.exitstatus unless system({ 'RUBYOPT' => nil }, cmd)
   end
 
   def update_gems(gems = '')
