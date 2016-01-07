@@ -45,6 +45,7 @@ module GoScript
     if $CHILD_STATUS.exitstatus.nil?
       $stderr.puts "could not run command: #{cmd}"
       $stderr.puts "(Check syslog for possible `Out of memory` error?)"
+      exit 1
     else
       exit $CHILD_STATUS.exitstatus unless status
     end
