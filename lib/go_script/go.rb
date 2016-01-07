@@ -40,7 +40,8 @@ module GoScript
   end
 
   def exec_cmd(cmd)
-    exit $CHILD_STATUS.exitstatus unless system({ 'RUBYOPT' => nil }, cmd)
+    exit $CHILD_STATUS.exitstatus unless system(
+      { 'RUBYOPT' => nil }, cmd, err: :out)
   end
 
   def update_gems(gems = '')
