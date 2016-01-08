@@ -1,7 +1,7 @@
 # @author Mike Bland (michael.bland@gsa.gov)
 
 module GoScript
-  VERSION = '0.1.5'
+  VERSION = '0.1.6'
 
   class Version
     def self.check_ruby_version(min_version)
