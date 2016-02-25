@@ -64,8 +64,8 @@ module GoScript
     exec_cmd 'npm install'
   end
 
-  JEKYLL_BUILD_CMD = 'bundle exec jekyll build --trace'
-  JEKYLL_SERVE_CMD = 'bundle exec jekyll serve -w --trace'
+  JEKYLL_BUILD_CMD = 'jekyll build --trace'
+  JEKYLL_SERVE_CMD = 'jekyll serve -w --trace'
 
   def args_to_string(args)
     args ||= ''
