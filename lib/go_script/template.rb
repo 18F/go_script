@@ -1,5 +1,6 @@
 module GoScript
   class Template
+    # rubocop:disable MethodLength
     def self.preamble
       <<END_OF_PREAMBLE
 #! /usr/bin/env ruby
@@ -33,7 +34,9 @@ check_ruby_version '#{RUBY_VERSION}'
 
 END_OF_PREAMBLE
     end
+    # rubocop:enable MethodLength
 
+    # rubocop:disable MethodLength
     def self.standard_dev_commands
       <<END_STANDARD_DEV_COMMANDS
 command_group :dev, 'Development commands'
@@ -61,6 +64,7 @@ end
 
 END_STANDARD_DEV_COMMANDS
     end
+    # rubocop:enable MethodLength
 
     def self.end
       "execute_command ARGV\n"

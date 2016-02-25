@@ -8,6 +8,7 @@ module GoScript
   class BundleTest < ::Minitest::Test
     attr_reader :testdir, :go_script, :gemfile, :this_gem, :env
 
+    # rubocop:disable MethodLength
     def setup
       @testdir = Dir.mktmpdir
       @go_script = File.join(testdir, 'go')
@@ -25,6 +26,7 @@ module GoScript
         "gem 'go_script', path: '#{this_gem}'\n",
       ].join("\n"))
     end
+    # rubocop:enable MethodLength
 
     def teardown
       FileUtils.remove_entry(testdir)
