@@ -44,7 +44,7 @@ module GoScript
       { 'RUBYOPT' => nil }, cmd, err: :out)
     if $CHILD_STATUS.exitstatus.nil?
       $stderr.puts "could not run command: #{cmd}"
-      $stderr.puts "(Check syslog for possible `Out of memory` error?)"
+      $stderr.puts '(Check syslog for possible `Out of memory` error?)'
       exit 1
     else
       exit $CHILD_STATUS.exitstatus unless status
@@ -90,10 +90,11 @@ module GoScript
   end
 
   def git_sync_and_deploy(commands, branch: nil)
-    exec_cmd 'git stash'
-    exec_cmd "git checkout -b #{branch}" unless branch.nil?
-    exec_cmd 'git pull'
-    exec_cmd 'bundle install' if File.exist? 'Gemfile'
+    exec_cmd 'git fetch origin #{branch}'
+    exec_cmd 'git clean -f'
+    exec_cmd "git reset --hard #{branch.nil? ? 'HEAD' : 'origin/' + branch}"
+    exec_cmd 'git submodule --sync --recursive'
+    exec_cmd 'git submodule update --init --recursive'
     commands.each { |command| exec_cmd command }
   end
 
