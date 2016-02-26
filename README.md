@@ -1,4 +1,4 @@
-## The `./go` script: a unified development environment interface.
+## The `./go` script: a unified development environment interface
 
 A `./go` script aims to abstract away all of the steps needed to develop (and
 sometimes deploy) a software project. It is a replacement for READMEs and
