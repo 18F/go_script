@@ -55,13 +55,12 @@ def_command :update_js, 'Update JavaScript components' do
 end
 
 def_command :test, 'Execute automated tests' do |args|
-  exec_cmd "bundle exec rake test \#{args.join ' '}"
+  exec_cmd "rake test \#{args_to_string args}"
 end
 
 def_command :lint, 'Run style-checking tools' do |files|
-  files = files.group_by { |f| File.extname f }
-  lint_ruby files['.rb']  # uses rubocop
-  lint_javascript Dir.pwd, files['.js']  # uses node_modules/jshint
+  lint_ruby files  # uses rubocop
+  lint_javascript Dir.pwd, files  # uses node_modules/eslint
 end
 
 END_STANDARD_DEV_COMMANDS

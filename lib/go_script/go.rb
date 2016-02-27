@@ -100,11 +100,11 @@ module GoScript
   end
 
   def lint_ruby(files)
-    exec_cmd "bundle exec rubocop #{file_args_by_extension files, '.rb'}"
+    exec_cmd "rubocop #{file_args_by_extension files, '.rb'}"
   end
 
   def lint_javascript(basedir, files)
     files = file_args_by_extension files, '.js'
-    exec_cmd "#{basedir}/node_modules/jshint/bin/jshint #{files}"
+    exec_cmd "#{basedir}/node_modules/.bin/eslint #{files}"
   end
 end
