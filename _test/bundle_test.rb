@@ -6,14 +6,17 @@ require 'minitest/autorun'
 
 module GoScript
   class BundleTest < ::Minitest::Test
+    TEST_SOURCE_DIR = File.dirname(__FILE__)
+
     attr_reader :testdir, :go_script, :gemfile, :this_gem, :env
 
     # rubocop:disable MethodLength
     def setup
       @testdir = Dir.mktmpdir
+      FileUtils.cp_r(File.join(TEST_SOURCE_DIR, 'test-site', '.'), testdir)
       @go_script = File.join(testdir, 'go')
       @gemfile = File.join(testdir, 'Gemfile')
-      @this_gem = File.dirname(File.dirname(__FILE__))
+      @this_gem = File.dirname(TEST_SOURCE_DIR)
       @env = {
         'BUNDLE_BIN_PATH' => nil,
         'BUNDLE_GEMFILE' => nil,
@@ -23,6 +26,9 @@ module GoScript
       File.write(gemfile, [
         'source \'https://rubygems.org\'',
         'gem \'jekyll\'',
+        'group :jekyll_plugins do',
+        '  gem \'guides_style_18f\'',
+        'end',
         "gem 'go_script', path: '#{this_gem}'\n",
       ].join("\n"))
     end
@@ -57,13 +63,13 @@ module GoScript
 
     def test_bundler
       create_jekyll_script
-      assert(system(env, go_script, 'build', '--help', out: '/dev/null'))
+      assert(system(env, go_script, 'build'))
     end
 
     def test_bundler_with_path_argument
       system(env, "cd #{testdir} && bundle install --path=vendor/bundle")
       create_jekyll_script
-      assert(system(env, go_script, 'build', '--help'))
+      assert(system(env, go_script, 'build'))
     end
   end
 end

@@ -40,8 +40,9 @@ module GoScript
   end
 
   def exec_cmd(cmd)
-    status = system(
-      { 'RUBYOPT' => nil }, cmd, err: :out)
+    env = {}.merge(ENV)
+    env.delete('RUBYOPT')
+    status = system(env, cmd, err: :out)
     if $CHILD_STATUS.exitstatus.nil?
       $stderr.puts "could not run command: #{cmd}"
       $stderr.puts '(Check syslog for possible `Out of memory` error?)'
