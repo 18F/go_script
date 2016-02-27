@@ -11,7 +11,9 @@ Dir.chdir File.dirname(__FILE__)
 
 def try_command_and_restart(command)
   exit $CHILD_STATUS.exitstatus unless system command
-  exec({ 'RUBYOPT' => nil }, RbConfig.ruby, *[$PROGRAM_NAME].concat(ARGV))
+  env = {}.merge(ENV)
+  env.delete('RUBYOPT')
+  exec(env, RbConfig.ruby, *[$PROGRAM_NAME].concat(ARGV))
 end
 
 begin
