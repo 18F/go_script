@@ -35,7 +35,7 @@ module GoScript
     # rubocop:enable MethodLength
 
     def teardown
-      FileUtils.remove_entry(testdir)
+      FileUtils.rm_rf(testdir, secure: true)
     end
 
     def create_script(commands)
@@ -56,20 +56,29 @@ module GoScript
       ].join("\n"))
     end
 
+    def exec_go_script(arg, **options)
+      if ENV['COMSPEC']
+        system(env, "ruby #{go_script} #{arg}")
+      else
+        system(env, go_script, arg, options)
+      end
+    end
+
     def test_create_script
       create_script('')
-      assert(system(env, go_script, '-h', out: '/dev/null'))
+      assert(File.exist?(go_script), "#{go_script} does not exist")
+      assert(exec_go_script('-h', out: '/dev/null'))
     end
 
     def test_bundler
       create_jekyll_script
-      assert(system(env, go_script, 'build'))
+      assert(exec_go_script('build'))
     end
 
     def test_bundler_with_path_argument
       system(env, "cd #{testdir} && bundle install --path=vendor/bundle")
       create_jekyll_script
-      assert(system(env, go_script, 'build'))
+      assert(exec_go_script('build'))
     end
   end
 end
