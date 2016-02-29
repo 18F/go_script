@@ -57,6 +57,9 @@ module GoScript
     end
 
     def exec_go_script(arg, **options)
+      # ENV['COMSPEC'] is the command shell on Windows. This is a way of being
+      # able to tell if the go_script can be run directly, or must be passed
+      # as the first argument to the ruby interpreter.
       if ENV['COMSPEC']
         system(env, "ruby #{go_script} #{arg}")
       else
