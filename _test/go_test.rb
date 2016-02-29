@@ -9,6 +9,8 @@ require 'stringio'
 
 module GoScript
   class ModuleTest < ::Minitest::Test
+    TEST_DIR = File.dirname(__FILE__).freeze
+
     def setup
       extend GoScript
       command_group :test, 'Test commands'
@@ -19,12 +21,12 @@ module GoScript
     end
 
     def test_exec_cmd
-      exec_cmd 'test -n "this is not an empty string"'
+      exec_cmd "ruby \"#{File.join(TEST_DIR, 'exit_success.rb')}\""
     end
 
     def test_exec_cmd_exits_on_failure
       assert_raises(SystemExit) do
-        exec_cmd 'test -z "this is not an empty string"'
+        exec_cmd "ruby \"#{File.join(TEST_DIR, 'exit_failure.rb')}\""
       end
     end
 

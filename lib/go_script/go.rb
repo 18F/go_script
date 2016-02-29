@@ -40,8 +40,7 @@ module GoScript
   end
 
   def exec_cmd(cmd)
-    status = system(
-      { 'RUBYOPT' => nil }, cmd, err: :out)
+    status = system(cmd, err: :out)
     if $CHILD_STATUS.exitstatus.nil?
       $stderr.puts "could not run command: #{cmd}"
       $stderr.puts '(Check syslog for possible `Out of memory` error?)'
@@ -99,11 +98,11 @@ module GoScript
   end
 
   def lint_ruby(files)
-    exec_cmd "bundle exec rubocop #{file_args_by_extension files, '.rb'}"
+    exec_cmd "rubocop #{file_args_by_extension files, '.rb'}"
   end
 
   def lint_javascript(basedir, files)
     files = file_args_by_extension files, '.js'
-    exec_cmd "#{basedir}/node_modules/jshint/bin/jshint #{files}"
+    exec_cmd "#{basedir}/node_modules/.bin/eslint #{files}"
   end
 end
