@@ -52,6 +52,8 @@ end
 extend GoScript
 check_ruby_version '#{RUBY_VERSION}'
 
+# END go_script #{VERSION} GENERATED CONTENT
+
 END_OF_PREAMBLE
     end
     # rubocop:enable MethodLength
